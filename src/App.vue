@@ -1,17 +1,15 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <MediaTable/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import MediaTable from './components/MediaTable.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    MediaTable
   }
 }
 </script>
@@ -24,5 +22,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.hidden {
+  display: none;
 }
 </style>
