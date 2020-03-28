@@ -1,4 +1,4 @@
-const nasaApiMock = {
+export const nasaApiMock = {
 	item(number, query, mediaType) {
 		const id = `${number}-${query}-${mediaType}`;
 		const item = {
@@ -29,27 +29,29 @@ const nasaApiMock = {
 		return item;
 	},
 
-	async search({q: query = "", media_type: mediaType = ["video", "audio", "image"], page = 1}) {
+	search: jest.fn().mockImplementation(async function ({q: query = "", media_type: mediaType = ["video", "audio", "image"], page = 1}) {
 		// Response Object structure
 		const response = {data: {collection: {}}};
 		response.data.collection.items = [];
 
 		// Mock items in the collection
 		for (let index = 0; index < 100; index++) {
-			const paginatedIndex = index * (page - 1 * 100);
-			const randomMediaType = mediaType[Math.ceil(Math.random() * mediaType.length)];
-			response.data.collection.items.push(this.item(paginatedIndex, query, randomMediaType));
+			const paginatedIndex = index + ((page - 1) * 100);
+			const alternatedMediaType = mediaType[index % mediaType.length];
+			response.data.collection.items.push(
+				this.item(paginatedIndex, query, alternatedMediaType)
+			);
 		}
 
 		return response;
-	},
+	}),
 
-	async asset() {
+	asset: jest.fn().mockImplementation(async function () {
 		throw new Error("Asset isn't mocked because it's not a used API and the time of writing.");
-	},
+	}),
 };
 
-const axiosNasaApiMock = function (url, params) {
+export const axiosNasaApiMock = function (url, params) {
 	if (url.match(/^\/asset/)) {
 		return nasaApiMock.asset();
 	} else if (url.match(/^\/search/)) {

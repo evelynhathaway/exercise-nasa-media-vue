@@ -1,4 +1,4 @@
-export const setRoute = function (query = "", mediaTypes = [], page = 1) {
+export const setRoute = function (query = "", mediaTypes = ["video", "audio", "image"], page = 1) {
 	let path = "";
 	if (query) path += `/search/${query}`;
 	if (mediaTypes.length > 0 && mediaTypes.length < 3) {

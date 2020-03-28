@@ -62,7 +62,8 @@
     "overrides": [
       {
         "files": [
-          "**/*.test.js"
+          "**/*.test.js",
+          "__mocks__/**/*.js"
         ],
         "extends": [
           "plugin:evelyn/jest"
