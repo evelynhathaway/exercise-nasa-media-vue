@@ -1,17 +1,27 @@
 <template>
   <div id="app">
-    <MediaTable/>
+    <SearchInput :query="query" :media-types="mediaTypes" :page="page"></SearchInput>
+    <router-view :query="query" :media-types="mediaTypes" :page="page"></router-view>
   </div>
 </template>
 
 <script>
-import MediaTable from './components/MediaTable.vue'
-export default {
-  name: 'App',
-  components: {
-    MediaTable
-  }
-}
+  import SearchInput from "./components/SearchInput.vue";
+
+  export default {
+    name: 'App',
+    components: {
+      SearchInput,
+    },
+    data() {
+      const {query, mediaTypes, page} = this.$route.params;
+      return {
+        query: query && query.replace(/-(?!-)/g, " ") || "",
+        mediaTypes: mediaTypes && mediaTypes.toLowerCase().split("-") || ["image", "video"],
+        page: parseInt(page) || 1,
+      };
+    },
+  };
 </script>
 
 <style>

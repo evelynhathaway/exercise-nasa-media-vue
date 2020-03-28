@@ -42,6 +42,11 @@
     components: {
       Preview
     },
+    props: {
+      query: String,
+      mediaTypes: Array,
+      page: Number,
+    },
     data() {
       return {
         perPage: 10,
@@ -59,7 +64,7 @@
             key: "media_type",
             label: "Type",
           },
-        ]
+        ],
       }
     },
     computed: {
@@ -68,28 +73,27 @@
       }
     },
     methods: {
-      async search(
-        query = "",
-        mediaTypes = ["image", "audio", "video"],
-        page = 1
-      ) {
+      async search() {
         // TODO: add next, previous, first to comp
         const {items} = await search({
-          q: query,
-          media_type: mediaTypes.join(","),
-          page,
+          q: this.query,
+          media_type: this.mediaTypes.join(","),
+          page: this.page,
         });
 
         this.items = items;
         return items;
       },
-      async initialSearch() {
-        this.search()
+      previousPage() {
+
+      },
+      nextPage() {
+
       },
       truncate,
     },
     created() {
-      this.initialSearch()
+      this.search()
     }
   }
 </script>
