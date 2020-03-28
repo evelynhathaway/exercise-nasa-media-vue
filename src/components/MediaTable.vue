@@ -133,8 +133,7 @@ export default {
 </script>
 
 <style scoped>
-/* :not(:first-child) */
-.table >>> th {
+.table >>> th:not(:first-child) {
 	min-width: 12em;
 }
 </style>
