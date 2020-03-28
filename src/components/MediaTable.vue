@@ -31,98 +31,98 @@
 </template>
 
 <script>
-  import Vue from "vue";
-  import {search} from "../util/nasa-api";
-  import {truncate} from "../util/truncate";
-  import Preview from "./Preview.vue";
-  import searchParamsMixin from "../mixins/search-params";
+import Vue from "vue";
+import {search} from "../util/nasa-api";
+import {truncate} from "../util/truncate";
+import Preview from "./Preview.vue";
+import searchParamsMixin from "../mixins/search-params";
 
-  export default {
-    name: "MediaTable",
-    mixins: [searchParamsMixin],
-    components: {
-      Preview
-    },
-    data() {
-      return {
-        // Cached items from the server, since there isn't an option to paginate by a certain amount on the API
-        cachedItems: [],
-        // Table columns
-        fields: [
-          {
-            key: "media",
-            label: "Preview"
-          },
-          "title",
-          "description",
-          "keywords",
-          {
-            key: "media_type",
-            label: "Type",
-          },
-        ],
-        pagesPerServerPage: 10,
-        itemsPerPage: 10,
-      }
-    },
-    computed: {
-      // Items for table element, taken from cached items
-      items() {
-        const firstIndex = ((this.page - 1) % this.pagesPerServerPage) * this.itemsPerPage;
-        const lastIndex = firstIndex + this.itemsPerPage;
-        const serverPageCache = this.cachedItems[this.serverPage];
-        return serverPageCache ? serverPageCache.slice(firstIndex, lastIndex) : [];
-      },
-      // The last page cached page
-      lastCachedPage() {return this.cachedItems.length * this.pagesPerServerPage},
-      // How many pages through the API the current page is
-      serverPage() {return Math.ceil(this.page / this.pagesPerServerPage)},
-    },
-    methods: {
-      async search(serverPageOffset = 0) {
-        const page = this.serverPage + serverPageOffset;
+export default {
+	name: "MediaTable",
+	mixins: [searchParamsMixin],
+	components: {
+		Preview,
+	},
+	data() {
+		return {
+			// Cached items from the server, since there isn't an option to paginate by a certain amount on the API
+			cachedItems: [],
+			// Table columns
+			fields: [
+				{
+					key: "media",
+					label: "Preview",
+				},
+				"title",
+				"description",
+				"keywords",
+				{
+					key: "media_type",
+					label: "Type",
+				},
+			],
+			pagesPerServerPage: 10,
+			itemsPerPage: 10,
+		};
+	},
+	computed: {
+		// Items for table element, taken from cached items
+		items() {
+			const firstIndex = ((this.page - 1) % this.pagesPerServerPage) * this.itemsPerPage;
+			const lastIndex = firstIndex + this.itemsPerPage;
+			const serverPageCache = this.cachedItems[this.serverPage];
+			return serverPageCache ? serverPageCache.slice(firstIndex, lastIndex) : [];
+		},
+		// The last page cached page
+		lastCachedPage() {return this.cachedItems.length * this.pagesPerServerPage;},
+		// How many pages through the API the current page is
+		serverPage() {return Math.ceil(this.page / this.pagesPerServerPage);},
+	},
+	methods: {
+		async search(serverPageOffset = 0) {
+			const page = this.serverPage + serverPageOffset;
 
-        // Early return if cached
-        if (this.cachedItems[page]) {
-          return;
-        }
+			// Early return if cached
+			if (this.cachedItems[page]) {
+				return;
+			}
 
-        const {items} = await search({
-          q: this.query,
-          media_type: this.mediaTypes.join(","),
-          page,
-        });
+			const {items} = await search({
+				q: this.query,
+				media_type: this.mediaTypes.join(","),
+				page,
+			});
 
-        // Reactive update a deep property of the array
-        // - We cannot use reactive property setters for properties determined purely at runtime
-        Vue.set(this.cachedItems, page, items);
-      },
-      updateItems() {
+			// Reactive update a deep property of the array
+			// - We cannot use reactive property setters for properties determined purely at runtime
+			Vue.set(this.cachedItems, page, items);
+		},
+		updateItems() {
 
-      },
-      async changePage() {
-        await this.search();
-        this.updateItems();
-        // Grab items for upcoming pages from the server
-        // - This isn't exactly preloading, it's partially to populate the pagination max pages
-        if ((this.page - 1) % this.pagesPerServerPage >= 7) {
-          this.search(1)
-        }
-      },
-      linkGenPage(newPage) {
-        return this.linkGen({page: newPage});
-      },
-      truncate,
-    },
-    created() {
-      this.changePage();
-    },
-    watch: {
-      page() {
-        this.changePage();
-      }
-    }
-  }
+		},
+		async changePage() {
+			await this.search();
+			this.updateItems();
+			// Grab items for upcoming pages from the server
+			// - This isn't exactly preloading, it's partially to populate the pagination max pages
+			if ((this.page - 1) % this.pagesPerServerPage >= 7) {
+				this.search(1);
+			}
+		},
+		linkGenPage(newPage) {
+			return this.linkGen({page: newPage});
+		},
+		truncate,
+	},
+	created() {
+		this.changePage();
+	},
+	watch: {
+		page() {
+			this.changePage();
+		},
+	},
+};
 </script>
 
 <style scoped>

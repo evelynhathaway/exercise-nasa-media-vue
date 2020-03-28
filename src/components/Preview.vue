@@ -5,13 +5,13 @@
 </template>
 
 <script>
-  export default {
-    name: 'Preview',
-    props: {
-      previewHref: String,
-      mediaType: String
-    }
-  }
+export default {
+	name: "Preview",
+	props: {
+		previewHref: String,
+		mediaType: String,
+	},
+};
 </script>
 
 <style scoped>

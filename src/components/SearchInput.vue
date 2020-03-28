@@ -5,9 +5,9 @@
 </template>
 
 <script>
-  export default {
-    name: 'SearchInput'
-  };
+export default {
+	name: "SearchInput",
+};
 </script>
 
 <style>
