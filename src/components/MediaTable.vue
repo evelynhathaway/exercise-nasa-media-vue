@@ -4,8 +4,6 @@
       striped
       :items="items"
       :fields="fields"
-      :per-page="perPage"
-      :current-page="currentPage"
       id="table"
     >
       <template v-slot:cell(description)="row">
@@ -19,39 +17,37 @@
       </template>
     </b-table>
 
-    <b-pagination
-        v-model="currentPage"
-        :total-rows="rows"
-        :per-page="perPage"
+    <b-pagination-nav
         aria-controls="table"
         first-number
+        use-router
+        :link-gen="linkGenPage"
+        :number-of-pages="lastCachedPage || 1"
         prev-text="Prev"
         next-text="Next"
         last-class="hidden"
-      ></b-pagination>
+      ></b-pagination-nav>
   </div>
 </template>
 
 <script>
-  import {search} from "../util/nasa-api.js"
-  import {truncate} from "../util/truncate.js"
-  import Preview from "./Preview.vue"
+  import Vue from "vue";
+  import {search} from "../util/nasa-api";
+  import {truncate} from "../util/truncate";
+  import Preview from "./Preview.vue";
+  import searchParamsMixin from "../mixins/search-params";
 
   export default {
-    name: 'MediaTable',
+    name: "MediaTable",
+    mixins: [searchParamsMixin],
     components: {
       Preview
     },
-    props: {
-      query: String,
-      mediaTypes: Array,
-      page: Number,
-    },
     data() {
       return {
-        perPage: 10,
-        currentPage: 1,
-        items: [],
+        // Cached items from the server, since there isn't an option to paginate by a certain amount on the API
+        cachedItems: [],
+        // Table columns
         fields: [
           {
             key: "media",
@@ -65,35 +61,66 @@
             label: "Type",
           },
         ],
+        pagesPerServerPage: 10,
+        itemsPerPage: 10,
       }
     },
     computed: {
-      rows() {
-        return this.items.length
-      }
+      // Items for table element, taken from cached items
+      items() {
+        const firstIndex = ((this.page - 1) % this.pagesPerServerPage) * this.itemsPerPage;
+        const lastIndex = firstIndex + this.itemsPerPage;
+        const serverPageCache = this.cachedItems[this.serverPage];
+        return serverPageCache ? serverPageCache.slice(firstIndex, lastIndex) : [];
+      },
+      // The last page cached page
+      lastCachedPage() {return this.cachedItems.length * this.pagesPerServerPage},
+      // How many pages through the API the current page is
+      serverPage() {return Math.ceil(this.page / this.pagesPerServerPage)},
     },
     methods: {
-      async search() {
-        // TODO: add next, previous, first to comp
+      async search(serverPageOffset = 0) {
+        const page = this.serverPage + serverPageOffset;
+
+        // Early return if cached
+        if (this.cachedItems[page]) {
+          return;
+        }
+
         const {items} = await search({
           q: this.query,
           media_type: this.mediaTypes.join(","),
-          page: this.page,
+          page,
         });
 
-        this.items = items;
-        return items;
+        // Reactive update a deep property of the array
+        // - We cannot use reactive property setters for properties determined purely at runtime
+        Vue.set(this.cachedItems, page, items);
       },
-      previousPage() {
+      updateItems() {
 
       },
-      nextPage() {
-
+      async changePage() {
+        await this.search();
+        this.updateItems();
+        // Grab items for upcoming pages from the server
+        // - This isn't exactly preloading, it's partially to populate the pagination max pages
+        if ((this.page - 1) % this.pagesPerServerPage >= 7) {
+          this.search(1)
+        }
+      },
+      linkGenPage(newPage) {
+        return this.linkGen({page: newPage});
       },
       truncate,
     },
     created() {
-      this.search()
+      this.changePage();
+    },
+    watch: {
+      page() {
+        this.changePage();
+      }
     }
   }
 </script>

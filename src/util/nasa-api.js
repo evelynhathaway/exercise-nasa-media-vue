@@ -1,7 +1,5 @@
 import axios from "axios"
 
-// TODO: add error handling
-
 const axiosBase = axios.create({
   baseURL: "https://images-api.nasa.gov"
 })
@@ -33,6 +31,10 @@ export const mediaProps = async function (item) {
     // Create media object for templating images, video, and audio
     media: {
       previewHref: item.links && getLink(item.links, "preview"),
+      // This API could be easily used to open each original media in another view if implemented
+      // Image: `<picture>` tag with sources and `<img>` fallback
+      // Video: `<video>` tag with sources and captions
+      // Audio: `<audio>` tag
       async getHrefs () {
         return await asset(item.data[0].nasa_id)
       }
