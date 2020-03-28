@@ -8,13 +8,6 @@ export const getLink = function (links, rel) {
 	return links.find(link => link.rel === rel)?.href;
 };
 
-export const collectionPagination = function (data) {
-	return {
-		next: axios.create(getLink(data.collection.links, "next")),
-		previous: axios.create(getLink(data.collection.links, "previous")),
-	};
-};
-
 export const asset = async function (id) {
 	const response = await axiosBase(`/asset/${id}`);
 	const collectionItems = response.data.collection.items;
@@ -49,7 +42,6 @@ export const search = async function (params) {
 	const {data} = response;
 
 	return {
-		next: collectionPagination(data),
 		items: await Promise.all(
 			data.collection.items.map(mediaProps)
 		),
