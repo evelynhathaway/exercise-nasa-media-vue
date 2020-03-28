@@ -8,8 +8,14 @@
       :current-page="currentPage"
       id="table"
     >
+      <template v-slot:cell(description)="row">
+        <span :title="row.value">{{truncate(row.value, 150)}}</span>
+      </template>
+      <template v-slot:cell(keywords)="row">
+        {{row.value ? row.value.join(", ") : "None"}}
+      </template>
       <template v-slot:cell(media)="row">
-        <Preview :src="row.value.previewHref" :type="row.value.media_type"/>
+        <Preview :preview-href="row.value.previewHref" :media-type="row.item.media_type"/>
       </template>
     </b-table>
 
@@ -28,15 +34,13 @@
 
 <script>
   import {search} from "../util/nasa-api.js"
+  import {truncate} from "../util/truncate.js"
   import Preview from "./Preview.vue"
 
   export default {
     name: 'MediaTable',
     components: {
       Preview
-    },
-    props: {
-      search: String
     },
     data() {
       return {
@@ -48,7 +52,13 @@
             key: "media",
             label: "Preview"
           },
-          "title"
+          "title",
+          "description",
+          "keywords",
+          {
+            key: "media_type",
+            label: "Type",
+          },
         ]
       }
     },
@@ -58,15 +68,28 @@
       }
     },
     methods: {
-      async loadInitialLiveItems() {
+      async search(
+        query = "",
+        mediaTypes = ["image", "audio", "video"],
+        page = 1
+      ) {
         // TODO: add next, previous, first to comp
-        const {items} = await search()
+        const {items} = await search({
+          q: query,
+          media_type: mediaTypes.join(","),
+          page,
+        });
+
         this.items = items;
         return items;
       },
+      async initialSearch() {
+        this.search()
+      },
+      truncate,
     },
     created() {
-      this.loadInitialLiveItems()
+      this.initialSearch()
     }
   }
 </script>

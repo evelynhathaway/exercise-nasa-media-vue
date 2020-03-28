@@ -43,12 +43,7 @@ export const mediaProps = async function (item) {
 }
 
 export const search = async function (params) {
-  const response = await axiosBase("/search", {
-    params: {
-      media_type: "image,video,audio",
-      ...params
-    }
-  })
+  const response = await axiosBase("/search", {params})
   const {data} = response;
 
   return {

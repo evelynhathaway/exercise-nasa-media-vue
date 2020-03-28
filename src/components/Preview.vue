@@ -1,6 +1,6 @@
 <template>
   <div class="preview-root">
-    <img :src="src"/>
+    <img :src="mediaType === 'audio' ? require('../assets/audio-thumb.png') : previewHref"/>
   </div>
 </template>
 
@@ -8,8 +8,8 @@
   export default {
     name: 'Preview',
     props: {
-      src: String,
-      type: String
+      previewHref: String,
+      mediaType: String
     }
   }
 </script>
