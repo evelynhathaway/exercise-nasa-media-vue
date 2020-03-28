@@ -1,10 +1,11 @@
 <template>
-	<div id="mediatable-root">
+	<div class="mediatable-root">
 		<b-table
 			striped
+			responsive
 			:items="items"
 			:fields="fields"
-			id="table"
+			class="table"
 		>
 			<template v-slot:cell(description)="row">
 				<span :title="row.value">{{truncate(row.value, 150)}}</span>
@@ -13,7 +14,11 @@
 				{{row.value ? row.value.join(", ") : "None"}}
 			</template>
 			<template v-slot:cell(media)="row">
-				<Preview :preview-href="row.value.previewHref" :media-type="row.item.media_type"/>
+				<Preview
+					:preview-href="row.value.previewHref"
+					:media-type="row.item.media_type"
+					:title="row.item.title"
+				/>
 			</template>
 		</b-table>
 
@@ -21,6 +26,8 @@
 			aria-controls="table"
 			first-number
 			use-router
+			align="center"
+			limit="7"
 			:link-gen="linkGenPage"
 			:number-of-pages="lastCachedPage || 1"
 			prev-text="Prev"
@@ -126,4 +133,8 @@ export default {
 </script>
 
 <style scoped>
+/* :not(:first-child) */
+.table >>> th {
+	min-width: 12em;
+}
 </style>

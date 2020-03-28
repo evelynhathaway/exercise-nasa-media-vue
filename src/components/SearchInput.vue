@@ -1,5 +1,5 @@
 <template>
-	<div id="search-root">
+	<div class="search-root">
 
 	</div>
 </template>

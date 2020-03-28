@@ -1,6 +1,11 @@
 <template>
 	<div class="preview-root">
-		<img :src="mediaType === 'audio' ? require('../assets/audio-thumb.png') : previewHref"/>
+		<img
+			class="image"
+			width="300"
+			:src="mediaType === 'audio' ? require('../assets/audio-thumb.png') : previewHref"
+			:alt="title"
+		/>
 	</div>
 </template>
 
@@ -10,9 +15,13 @@ export default {
 	props: {
 		previewHref: String,
 		mediaType: String,
+		title: String,
 	},
 };
 </script>
 
 <style scoped>
+.image {
+	max-width: 300px;
+}
 </style>
