@@ -11,10 +11,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - name: Run npm install, lint, and build
+    - name: Run npm install, lint, test, and build
       run: |
         npm ci
         npm run lint
+        npm run test
         npm run build
       env:
         CI: true
