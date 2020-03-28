@@ -1,7 +1,7 @@
 <template>
-  <div class="preview-root">
-    <img :src="mediaType === 'audio' ? require('../assets/audio-thumb.png') : previewHref"/>
-  </div>
+	<div class="preview-root">
+		<img :src="mediaType === 'audio' ? require('../assets/audio-thumb.png') : previewHref"/>
+	</div>
 </template>
 
 <script>

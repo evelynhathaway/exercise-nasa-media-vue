@@ -1,7 +1,7 @@
 <template>
-  <div id="search-root">
+	<div id="search-root">
 
-  </div>
+	</div>
 </template>
 
 <script>
@@ -10,5 +10,5 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 </style>

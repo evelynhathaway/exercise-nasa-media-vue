@@ -1,33 +1,33 @@
 <template>
-  <div id="mediatable-root">
-    <b-table
-      striped
-      :items="items"
-      :fields="fields"
-      id="table"
-    >
-      <template v-slot:cell(description)="row">
-        <span :title="row.value">{{truncate(row.value, 150)}}</span>
-      </template>
-      <template v-slot:cell(keywords)="row">
-        {{row.value ? row.value.join(", ") : "None"}}
-      </template>
-      <template v-slot:cell(media)="row">
-        <Preview :preview-href="row.value.previewHref" :media-type="row.item.media_type"/>
-      </template>
-    </b-table>
+	<div id="mediatable-root">
+		<b-table
+			striped
+			:items="items"
+			:fields="fields"
+			id="table"
+		>
+			<template v-slot:cell(description)="row">
+				<span :title="row.value">{{truncate(row.value, 150)}}</span>
+			</template>
+			<template v-slot:cell(keywords)="row">
+				{{row.value ? row.value.join(", ") : "None"}}
+			</template>
+			<template v-slot:cell(media)="row">
+				<Preview :preview-href="row.value.previewHref" :media-type="row.item.media_type"/>
+			</template>
+		</b-table>
 
-    <b-pagination-nav
-        aria-controls="table"
-        first-number
-        use-router
-        :link-gen="linkGenPage"
-        :number-of-pages="lastCachedPage || 1"
-        prev-text="Prev"
-        next-text="Next"
-        last-class="hidden"
-      ></b-pagination-nav>
-  </div>
+		<b-pagination-nav
+			aria-controls="table"
+			first-number
+			use-router
+			:link-gen="linkGenPage"
+			:number-of-pages="lastCachedPage || 1"
+			prev-text="Prev"
+			next-text="Next"
+			last-class="hidden"
+		></b-pagination-nav>
+	</div>
 </template>
 
 <script>
