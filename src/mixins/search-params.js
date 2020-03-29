@@ -8,6 +8,7 @@ export default {
 			},
 		};
 	},
+	// Hydrate state from route params
 	computed: {
 		query() {
 			const {query} = this.$route.params;
@@ -32,6 +33,7 @@ export default {
 		},
 	},
 	methods: {
+		// Generate new link by params
 		linkGen(newSearchParams) {
 			// Update search params for use in generation
 			const {query, mediaTypes, page} = {

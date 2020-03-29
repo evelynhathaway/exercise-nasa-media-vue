@@ -7,12 +7,15 @@
 			:fields="fields"
 			class="table"
 		>
+			<!-- Truncated Description -->
 			<template v-slot:cell(description)="row">
 				<span :title="row.value">{{truncate(row.value, 150)}}</span>
 			</template>
+			<!-- Keywords -->
 			<template v-slot:cell(keywords)="row">
 				{{row.value ? row.value.join(", ") : "None"}}
 			</template>
+			<!-- Preview image -->
 			<template v-slot:cell(media)="row">
 				<Preview
 					:preview-href="row.value.previewHref"
@@ -22,6 +25,7 @@
 			</template>
 		</b-table>
 
+		<!-- Pagination - Partially controls the routes -->
 		<b-pagination-nav
 			aria-controls="table"
 			first-number
@@ -98,6 +102,7 @@ export default {
 		serverPage() {return Math.ceil(this.page / this.pagesPerServerPage);},
 	},
 	methods: {
+		// Get items from the API, forwards to the nasa-api helper
 		async search(serverPageOffset = 0) {
 			const page = this.serverPage + serverPageOffset;
 
@@ -126,10 +131,12 @@ export default {
 				this.search(1);
 			}
 		},
+		// When the search query or media types change, clear cache and search
 		changeSearch() {
 			this.cachedItems = [];
 			this.changePage();
 		},
+		// Generate links to new pages by number
 		linkGenPage(newPage) {
 			return this.linkGen({page: newPage});
 		},
@@ -138,6 +145,7 @@ export default {
 	created() {
 		this.changePage();
 	},
+	// Watch changes from mixin
 	watch: {
 		query() {
 			this.changeSearch();
