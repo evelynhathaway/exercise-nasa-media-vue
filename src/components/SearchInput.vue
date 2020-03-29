@@ -48,8 +48,8 @@ export default {
 		return {
 			// Data from form, used in setters from v-model
 			formData: {
-				query: undefined,
-				mediaTypes: undefined,
+				query: null,
+				mediaTypes: null,
 			},
 		};
 	},
@@ -62,11 +62,17 @@ export default {
 		// - Not possible to watch the route props (e.g. `this.query`) for use in the model
 		// - I can't wait for Vue.js v3's Proxy support
 		formQuery: {
-			get () {return this.formData.query || this.query;},
+			get () {
+				const needsHydrating = this.formData.query === null;
+				return needsHydrating ? this.query : this.formData.query;
+			},
 			set (value) {this.formData.query = value;},
 		},
 		formMediaTypes: {
-			get () {return this.formData.mediaTypes || this.mediaTypes;},
+			get () {
+				const needsHydrating = this.formData.mediaTypes === null;
+				return needsHydrating ? this.mediaTypes : this.formData.mediaTypes;
+			},
 			set (value) {this.formData.mediaTypes = value;},
 		},
 	},
