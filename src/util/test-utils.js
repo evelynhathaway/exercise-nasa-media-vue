@@ -1,6 +1,6 @@
 export const setRoute = function (query = "", mediaTypes = ["video", "audio", "image"], page = 1) {
 	let path = "";
-	if (query) path += `/search/${query}`;
+	if (query) path += `/search/${query.replace(/-/g, "--").replace(/ /g, "-")}`;
 	if (mediaTypes.length > 0 && mediaTypes.length < 3) {
 		mediaTypes = mediaTypes.join("-");
 		path += `/${mediaTypes}`;

@@ -29,7 +29,15 @@ export const nasaApiMock = {
 		return item;
 	},
 
-	search: jest.fn().mockImplementation(async function ({q: query = "", media_type: mediaType = ["video", "audio", "image"], page = 1}) {
+	search: jest.fn().mockImplementation(async function ({
+		params: {
+			q: query = "",
+			media_type: mediaTypes = "video,audio,image",
+			page = 1,
+		},
+	}) {
+		mediaTypes = mediaTypes.split(",");
+
 		// Response Object structure
 		const response = {data: {collection: {}}};
 		response.data.collection.items = [];
@@ -37,7 +45,7 @@ export const nasaApiMock = {
 		// Mock items in the collection
 		for (let index = 0; index < 100; index++) {
 			const paginatedIndex = index + ((page - 1) * 100);
-			const alternatedMediaType = mediaType[index % mediaType.length];
+			const alternatedMediaType = mediaTypes[index % mediaTypes.length];
 			response.data.collection.items.push(
 				this.item(paginatedIndex, query, alternatedMediaType)
 			);
