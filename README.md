@@ -17,9 +17,9 @@ Single page app webapp using the NASA Image and Video Library written in Vue.js 
 - Displays a table of media from the API
 	- Preview column using the thumbnail link from the API
 	- Title, Keywords, Media Type, and Description metadata columns
-- Search for a certain media by any field
-- Filter by media type
-- Search query, media types, and page number are preserved in the URL
+- Search for a certain media by any field ([try online](https://exercise-nasa-media-vue.evelyn.dev/search/earth-blue-marble/image))
+- Filter by media type ([try online](https://exercise-nasa-media-vue.evelyn.dev/image))
+- Search query, media types, and page number are preserved in the URL ([try online](https://exercise-nasa-media-vue.evelyn.dev/search/test/image-video/2))
 	- Hydrates the state on reload
 
 ## Project Structure
@@ -74,6 +74,8 @@ npm install
 ```
 
 ## Launch Development Server
+
+[**Just want to view it?**](https://exercise-nasa-media-vue.evelyn.dev)
 
 ```bash
 npm run serve
