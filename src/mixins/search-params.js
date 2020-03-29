@@ -50,6 +50,8 @@ export default {
 			}
 			if (page > 1) {
 				url += `/${page}`;
+			} else {
+				url += "/";
 			}
 			return url;
 		},
