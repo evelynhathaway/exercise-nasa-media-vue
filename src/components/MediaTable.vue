@@ -81,7 +81,19 @@ export default {
 			return serverPageCache ? serverPageCache.slice(firstIndex, lastIndex) : [];
 		},
 		// The last page cached page
-		lastCachedPage() {return this.cachedItems.length * this.pagesPerServerPage;},
+		lastCachedPage() {
+			let totalPages = 0;
+			// `cachedItems` may be `undefined` as an initial call result, safegaurd as zero, the for loop won't run
+			const numberOfPages = this.cachedItems.length || 0;
+			// Because our first index is always empty, ignore it by starting index at `1`
+			// - This is because API pages start at `1` and I am trying to be consistent
+			for (let pageIndex = 1; pageIndex < numberOfPages; pageIndex++) {
+				const thisPage = this.cachedItems[pageIndex];
+				// if `thisPage` is `undefined`, it means we haven't cached it yet. As a result, we assume it's the amount of pages on a server page
+				totalPages += (thisPage ? thisPage.length / this.itemsPerPage : this.pagesPerServerPage);
+			}
+			return totalPages;
+		},
 		// How many pages through the API the current page is
 		serverPage() {return Math.ceil(this.page / this.pagesPerServerPage);},
 	},
@@ -102,14 +114,12 @@ export default {
 
 			// Reactive update a deep property of the array
 			// - We cannot use reactive property setters for properties determined purely at runtime
-			Vue.set(this.cachedItems, page, items);
-		},
-		updateItems() {
-
+			if (items.length) {
+				Vue.set(this.cachedItems, page, items);
+			}
 		},
 		async changePage() {
 			await this.search();
-			this.updateItems();
 			// Grab items for upcoming pages from the server
 			// - This isn't exactly preloading, it's partially to populate the pagination max pages
 			if ((this.page - 1) % this.pagesPerServerPage >= 7) {
