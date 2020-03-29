@@ -126,6 +126,10 @@ export default {
 				this.search(1);
 			}
 		},
+		changeSearch() {
+			this.cachedItems = [];
+			this.changePage();
+		},
 		linkGenPage(newPage) {
 			return this.linkGen({page: newPage});
 		},
@@ -135,6 +139,12 @@ export default {
 		this.changePage();
 	},
 	watch: {
+		query() {
+			this.changeSearch();
+		},
+		mediaTypes() {
+			this.changeSearch();
+		},
 		page() {
 			this.changePage();
 		},
